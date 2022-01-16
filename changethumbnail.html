@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>jQuery Change Thumbnail</title>
+
+	<style type="text/css">
+
+		body {
+
+			margin: 0 auto;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 80vh;
+
+		}
+
+		h2 {
+			text-align: center;
+			font-size: 3rem;
+		}
+
+		.thumb {
+			margin: 0 auto;
+		}
+		
+		figure {
+			width: 409px;
+
+		}
+
+		figcaption {
+			text-align: center;
+			font-style: italic;
+			font-size: 22px;
+		}
+
+		img.image_figure {
+			width: 400px;
+			height: auto;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			padding: 4px;
+			overflow: hidden;
+		}
+
+		.bttn {
+			width: 130px;
+		    padding: 7px;
+		    text-align: center;
+		    background: #0088FF;
+		    font-size: 15px;
+		    cursor: pointer;
+		    border: 1px solid #ccc;
+		    border-radius: 8px;
+		}
+
+		.bttn:active {
+			margin-left: 2px;
+    		margin-top: 15px;
+		}
+
+	</style>
+
+	<script type="text/javascript" src="jquery.min.js"></script>
+
+</head>
+<body>
+
+	<h2>jQuery Change Thumbnail</h2>
+
+	<div class="thumb">
+		
+		<figure>
+			
+			<img class="image_figure" src="images/Lighthouse.jpg"></img>
+
+			<figcaption>Lighthouse</figcaption>
+
+		</figure>
+
+
+	</div>
+		<p class="bttn" data-state="0">Start Animation</p>
+
+	<script type="text/javascript">
+
+		const images = ['Lighthouse', 'Penguins', 'Tulips', 'Desert', 'Hydrangeas', 'Koala'];
+		
+		jQuery(function($) {
+
+			let reset, index = 0;
+			const $img = $('.image_figure');
+			const $fc = $img.next();
+
+			const changeThumbnail = function(run=true) {
+
+				if (!run) {
+					clearTimeout(reset);
+					return;
+				}
+
+				index++;
+
+				if (images.length <= index) {
+					index = 0;
+				}
+
+				const imageName = images[index];
+				const imageFile = `images/${imageName}.jpg`
+
+				$img.attr('src', imageFile);
+
+				$fc.fadeOut(500, function() {
+
+					$(this).text(imageName);
+					$(this).fadeIn(1000);
+
+				});
+
+				reset = setTimeout(changeThumbnail, 2000);
+			}
+
+
+
+			$('.bttn').on('click', function() {
+
+				const bttnState = parseInt($(this).attr('data-state'));
+
+				// on
+				if (bttnState) {
+					changeThumbnail(false);
+					$(this).attr('data-state', 0).text('Start Animation');
+				}
+
+				// off
+				else {
+					changeThumbnail();
+					$(this).attr('data-state', 1).text('Stop Animation');
+
+				}
+
+
+			});
+
+		});
+	</script>
+
+</body>
+</html>

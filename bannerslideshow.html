@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>jQuery Banner-Slideshow</title>
+
+	<style type="text/css">
+		
+		body {
+			margin: 0px;
+			padding: 0px;
+
+		}
+
+		.container {
+			width: 960px;
+			margin: 0px auto;
+			padding: 1em 0;
+		}
+
+
+
+		.banner {
+			width: 800px;
+			height: 360px;
+			margin: 1em auto;
+			border: 1px solid #ccc;
+			overflow: hidden;
+		}
+
+		.slide-holder {
+			width: 100%;
+			height: 360px;
+			overflow: hidden;			
+		}
+
+		.slide > img {
+			width: 100%;
+		}
+
+		#counter {
+			position: absolute;
+			padding: 10px;
+			border-radius: 80px;
+			margin-left: 15px;
+			margin-top: 15px;
+			color: #ddd;
+			font-weight: bold;
+			opacity: .7;
+		}
+
+		#desc {
+			position: absolute;
+			margin-top: 10px;
+			color: #555;
+			text-align: center;
+			width: 800px;
+			font-style: italic;
+			font-size: 18px;
+		}
+
+		figcaption {
+			font-size: 20px;
+			font-style: italic;
+			text-align: center;
+		}
+
+	</style>
+
+	<script type="text/javascript" src="jquery.min.js"></script>
+
+
+</head>
+<body>
+
+		<div class="container">
+		
+			<h2>jQuery Banner-Slideshow</h2>
+			
+			<div class="banner">
+
+				<div id="counter"></div>
+
+				<div class="slide-holder">
+
+					<div class="slide" data-active='1' data-desc="Slide 1">
+						<img src="images/Desert.jpg">
+					</div>
+
+					<div class="slide" data-active='0' data-desc="Slide 2">
+						<img src="images/Hydrangeas.jpg">
+					</div>
+
+					<div class="slide" data-active='0' data-desc="Slide 3">
+						<img src="images/Koala.jpg">
+					</div>
+
+					<div class="slide" data-active='0' data-desc="Slide 4">
+						<img src="images/Lighthouse.jpg">
+					</div>
+
+					<div class="slide" data-active='0' data-desc="Slide 5">
+						<img src="images/Penguins.jpg">
+					</div>
+
+					<div class="slide" data-active='0' data-desc="Slide 6">
+						<img src="images/Tulips.jpg">
+					</div>
+
+				</div>
+
+				<div id="desc">Here goes the image Desc...</div>
+
+			</div>
+
+			
+	</div>	
+
+	<script type="text/javascript">
+		
+		jQuery(function() {
+
+			const changeSlide = function() {
+
+				$('.slide[data-active=1]').slideUp(500, function() {
+
+					$(this).attr('data-active', 0);
+
+					if ($(this).next().length) {
+						$(this).next().attr('data-active', 1);
+					}
+					else {
+						$('.slide-holder > .slide').show().first().attr('data-active', 1);
+					}
+					$('#desc').text($('.slide[data-active=1]').attr('data-desc'));
+				});
+
+				counter();
+			};
+
+			const counter = function(count=5) {
+
+				$('#counter').text(count);
+
+				const counterReset = setTimeout( () => counter(--count), 1000);
+
+				if (count == 0) {
+
+					clearTimeout(counterReset);
+					return changeSlide();
+
+				}
+
+			};
+
+			counter();
+			$('#desc').text($('.slide[data-active=1]').attr('data-desc'));
+
+
+		});
+
+	</script>
+
+
+
+</body>
+</html>

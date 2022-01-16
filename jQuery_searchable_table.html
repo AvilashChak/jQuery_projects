@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>jQuery Searchable Table</title>
+
+	<style type="text/css">
+		
+		body {
+			width: 100%;
+			margin: 0px;
+			padding: 0px;
+			font-family: arial,sans-serif;
+			line-height: 1.5;
+			color: dimgray;
+			}
+
+		.container {
+			width: 800px;
+			margin: 0px auto;
+			
+		}
+
+		#searchText {
+			display: inline-block;
+			margin-right: 438px;
+			width: 250px;
+			height: 20px;
+			padding: 2px 4px;
+			border-radius: 4px;
+			border: 2px solid blue;
+			background-color: whitesmoke;
+
+		}
+
+		#addButton {
+			display: inline-block;
+			width: 90px;
+			height: 26px;
+			padding: 2px 4px;
+			border-radius: 4px;
+			border: 2px solid blue;
+			
+		}
+
+		#addButton:active {
+			font-size: 12px;
+			background: white;
+
+		}
+
+		#p {
+
+			margin-bottom: 5px;
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+
+		th {
+			background-color: whitesmoke;
+			border: 1px solid blue;
+			padding: 5px;
+		}
+
+		.sl {
+			width: 50px;
+			
+		}
+
+		.fn, .ln {
+
+			width: 250px;
+			
+		}
+
+		.email {
+
+			width: 200px;
+			
+		}
+
+		td {
+			padding: 10px 5px;
+			border: 1px solid blue;
+		}
+
+		tr.nodata > td {
+
+			text-align: center;
+			font-style: italic;
+		
+		}
+
+		td input {
+			display: inline-block;
+			width: 200px;
+			padding: 5px;
+			border: 1px solid blue;
+			background: whitesmoke;
+			color: dimgray;
+
+		}
+
+		.ctl-buttons {
+			position: absolute;
+			right: 14em;
+			margin-top: -13px;
+		}
+
+		.ctl-buttons > button {
+			margin-right: 1em;
+		}
+
+		input.error {
+			border-color: red;
+		}
+
+
+
+	</style>
+
+	<script type="text/javascript" src="jquery.min.js"></script>
+
+	<script type="text/javascript">
+		
+		const inputTr = `<tr class="input-row">
+		<td><div class="ctl-buttons"><button class="save">Save</button><button class="cancel">Cancel</button></div></td>
+		<td><input type="text" class="fname" placeholder="Enter your first name"/></td>
+		<td><input type="text" class="lname" placeholder="Enter your last name"/></td>
+		<td><input type="text" class="email" placeholder="Enter your email"/></td>
+		</tr>`
+
+		jQuery (function($) {
+
+			const $table = $('table');
+			const $tbody = $table.find('tbody');
+			const $noDataTr = $tbody.find('.nodata');
+
+			// add
+			$('#addButton').on('click', function() {
+
+				$noDataTr.hide();
+
+				$tbody.append(inputTr);
+			});
+
+			// cancel
+			$('table').on('click', '.cancel', function() {
+
+				if ($tbody.find('tr').length > 2) {
+
+					$noDataTr.hide();
+				}
+				else {
+
+					$noDataTr.show();
+				}
+
+				$(this).parents('tr.input-row').remove();
+
+			});
+
+			// save
+			$('table').on('click', '.save', function() {
+
+				const $tr = $(this).parents('tr.input-row');
+
+				const $e_fname = $tr.find('.fname');
+				const $e_lname = $tr.find('.lname');
+				const $e_email = $tr.find('.email');
+
+				const
+				fname = $e_fname.val().trim(),
+				lname = $e_lname.val().trim(),
+				email = $e_email.val().trim();
+
+				let sl = 1;
+				let td0 = '', td1 = '', td2 = '', td3 = '';
+
+				let l;
+				if ( (l = $tbody.find('tr.data').length) > 0) {
+
+					sl = l + 1;
+
+				}
+
+				td0 = `<td>${sl}</td>`;
+
+				if (fname == '') {
+					$e_fname.addClass('error');
+				}
+				else {
+					$e_fname.removeClass('error');
+					td1 = `<td class = "firstName">${fname}</td>`
+
+
+				}if (lname == '') {
+					$e_lname.addClass('error');
+				}
+				else {
+					$e_lname.removeClass('error');
+					td2 = `<td class = "lastName">${lname}</td>`
+
+				
+				}if (email == '') {
+					$e_email.addClass('error');
+				}
+				else {
+					$e_email.removeClass('error');
+					td3 = `<td class = "userMail">${email}</td>`
+				}
+
+				if (td1 && td2 && td3) {
+
+					const newTr = `<tr class = "data">${td0 + td1 + td2 + td3}</tr>`
+
+					$tbody.append(newTr);
+
+					$tr.find('.cancel').trigger('click');
+
+				}
+
+
+			});
+
+
+			$('#searchText').on('keyup', function() {
+
+				const searchKey = $(this).val().trim().toLowerCase();
+
+				if ( searchKey == '' ) {
+
+					$('table tr.data').show();
+
+					return;
+				}
+
+				$('table tr.data').filter( (i, tr) => {
+
+					let text = $(tr).find('.firstName').text().toLowerCase();
+					text += ' '+ $(tr).find('.lastName').text().toLowerCase();
+					text += ' '+ $(tr).find('.userMail').text().toLowerCase();
+
+					return text.indexOf(searchKey) == -1 ? true : false;
+
+				}).hide();
+
+
+			});
+
+			//::TODO - highlight filter text
+
+		});
+
+	</script>
+</head>
+<body>
+
+	<div class="container">
+		
+		<h2 id="h2">jQuery Searchable Table</h2>
+
+		<p id="p">
+			<input id="searchText" type="text" name="search" placeholder="search...">
+			<button id="addButton">Add data</button>
+		</p>
+
+		<table>
+			
+			<thead>
+				<tr>
+					
+					<th class="sl">Sl no.</th>
+					<th class="fn">First Name</th>
+					<th class="ln">Last Name</th>
+					<th class="email">Email</th>
+
+				</tr>
+
+			</thead>
+
+			<tbody>
+					
+				<tr class="nodata">
+					<td colspan="4">No data to display..</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+
+
+</body>
+</html>
